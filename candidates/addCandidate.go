@@ -17,7 +17,7 @@ import (
 )
 
 type Candidate struct {
-	Id         string  `json:"id"`
+	Id         string `json:"id"`
 	FullName   string `json:"fullname"`
 	Email      string `json:"email"`
 	Experience int64  `json:"experience"`
@@ -51,13 +51,13 @@ func addCandidate(ctx context.Context, request events.APIGatewayProxyRequest) (e
 
 	// Initialize Candidate Information
 	candidate := &Candidate{
-		Id:  id,
+		Id:        id,
 		CreatedAt: time.Now().String(),
 		UpdatedAt: time.Now().String(),
 	}
 
 	// Parse request body
-	json.Unmarshal([]byte(request.Body), candidate)
+	_ = json.Unmarshal([]byte(request.Body), candidate)
 
 	// Write to DynamoDB
 	item, _ := dynamodbattribute.MarshalMap(candidate)
