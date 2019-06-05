@@ -42,6 +42,23 @@ functions:
           path: candidates
           method: post
 
+  listCandidates:
+    handler: bin/candidates/listCandidates
+    memorySize: 128
+    description: List all interview candidates.
+    events:
+      - http:
+          path: candidates
+          method: get
+
+  getCandidate:
+    handler: bin/candidates/getCandidate
+    memorySize: 128
+    description: Get candidate information by ID.
+    events:
+      - http:
+          path: candidates/{id}
+          method: patch
 
 # you can add CloudFormation resource templates here
 resources:
