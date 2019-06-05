@@ -22,8 +22,6 @@ type CandidateInfo struct {
 	FullName   string `json:"fullname"`
 	Email      string `json:"email"`
 	Experience int64  `json:"experience"`
-	CreatedAt  string `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
 }
 
 type ListCandidatesResponse struct {

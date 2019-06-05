@@ -58,7 +58,7 @@ functions:
     events:
       - http:
           path: candidates/{id}
-          method: patch
+          method: get
 
 # you can add CloudFormation resource templates here
 resources:
@@ -80,3 +80,6 @@ resources:
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
         TableName: ${self:provider.environment.CANDIDATE_TABLE}
+
+plugins:
+  - serverless-sam

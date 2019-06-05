@@ -4,6 +4,7 @@ build:
 	dep ensure -v
 	env GOOS=linux go build -ldflags="-s -w" -o bin/candidates/addCandidate candidates/addCandidate.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/candidates/listCandidates candidates/listCandidates.go
+	env GOOS=linux go build -ldflags="-s -w" -o bin/candidates/getCandidate candidates/getCandidate.go
 
 clean:
 	rm -rf ./bin ./vendor Gopkg.lock

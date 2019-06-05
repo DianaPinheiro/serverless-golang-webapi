@@ -42,8 +42,6 @@ func init() {
 
 // addCandidate handler function parses the request body for a candidate information
 func addCandidate(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Println("Adding new candidate...")
-
 	var (
 		id        = uuid.Must(uuid.NewV4(), nil).String()
 		tableName = aws.String(os.Getenv("CANDIDATE_TABLE"))
