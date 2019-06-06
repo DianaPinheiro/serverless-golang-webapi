@@ -13,6 +13,7 @@ provider:
   environment:
     CANDIDATE_TABLE: ${self:service}-${opt:stage, self:provider.stage}
     CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}"
+    SLS_DEBUG: "*"
 
   # Defines what other AWS services our lambda functions can access
   iamRoleStatements:
@@ -59,6 +60,14 @@ functions:
       - http:
           path: candidates/{id}
           method: get
+
+  removeCandidate:
+    handler: bin/candidates/removeCandidate
+    description: Remove a candidate by ID.
+    events:
+      - http:
+          path: candidates/{id}
+          method: delete
 
 # you can add CloudFormation resource templates here
 resources:

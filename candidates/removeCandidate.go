@@ -17,13 +17,6 @@ import (
 
 var db *dynamodb.DynamoDB
 
-type CandidateInformation struct {
-	Id         string `json:"id"`
-	FullName   string `json:"fullname"`
-	Email      string `json:"email"`
-	Experience int64  `json:"experience"`
-}
-
 // In this function we perform some initialization logic like making a database connection to DynamoDB.
 // init function is automatically called before main()
 func init() {
@@ -37,24 +30,24 @@ func init() {
 	}
 }
 
-// Get interview candidate by ID sent by request
-func getCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+// Removes an interview candidate by ID sent in request URL
+func removeCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var (
 		tableName = aws.String(os.Getenv("CANDIDATE_TABLE"))
 		// Parse ID from request body
 		candidateID = request.PathParameters["id"]
 	)
 
-	// Read candidate by ID
-	result, err := db.GetItem(&dynamodb.GetItemInput{
-		TableName: tableName,
+	input := &dynamodb.DeleteItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
 				S: aws.String(candidateID),
 			},
 		},
-	})
+		TableName: tableName,
+	}
 
+	_, err := db.DeleteItem(input)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			Body:       err.Error(),
@@ -62,17 +55,11 @@ func getCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest
 		}, err
 	}
 
-	candidate := CandidateInformation{}
-	err = dynamodbattribute.UnmarshalMap(result.Item, &candidate)
-
-	body, _ := json.Marshal(candidate)
-
 	return events.APIGatewayProxyResponse{
-		Body:       string(body),
-		StatusCode: 200,
+		StatusCode: 204,
 	}, nil
 }
 
 func main() {
-	lambda.Start(getCandidateByID)
+	lambda.Start(removeCandidateByID)
 }
