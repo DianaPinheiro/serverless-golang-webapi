@@ -3,39 +3,16 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-
 	"os"
+	data "serverless-golang-webapi/database"
+	models "serverless-golang-webapi/database/Models"
 )
-
-var db *dynamodb.DynamoDB
-
-type CandidateInformation struct {
-	Id         string `json:"id"`
-	FullName   string `json:"fullname"`
-	Email      string `json:"email"`
-	Experience int64  `json:"experience"`
-}
-
-// In this function we perform some initialization logic like making a database connection to DynamoDB.
-// init function is automatically called before main()
-func init() {
-	region := os.Getenv("AWS_REGION")
-	if session, err := session.NewSession(&aws.Config{ // Use aws sdk to connect to dynamoDB
-		Region: &region,
-	}); err != nil {
-		fmt.Println(fmt.Sprintf("Failed to connect to AWS: %s", err.Error()))
-	} else {
-		db = dynamodb.New(session) // Create DynamoDB client
-	}
-}
 
 // Get interview candidate by ID sent by request
 func getCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -46,7 +23,7 @@ func getCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest
 	)
 
 	// Read candidate by ID
-	result, err := db.GetItem(&dynamodb.GetItemInput{
+	result, err := data.DB.GetItem(&dynamodb.GetItemInput{
 		TableName: tableName,
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
@@ -62,8 +39,8 @@ func getCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest
 		}, err
 	}
 
-	candidate := CandidateInformation{}
-	err = dynamodbattribute.UnmarshalMap(result.Item, &candidate)
+	candidate := &models.Candidate{}
+	err = dynamodbattribute.UnmarshalMap(result.Item, candidate)
 
 	if candidate.Id == "" {
 		body, _ := json.Marshal("Could not find the candidate with ID " + candidateID)
