@@ -66,8 +66,9 @@ func getCandidateByID(ctx context.Context, request events.APIGatewayProxyRequest
 	err = dynamodbattribute.UnmarshalMap(result.Item, &candidate)
 
 	if candidate.Id == "" {
+		body, _ := json.Marshal("Could not find the candidate with ID " + candidateID)
 		return events.APIGatewayProxyResponse{
-			Body:       "Could not find the candidate with ID " + candidateID,
+			Body:       string(body),
 			StatusCode: 200,
 		}, nil
 	}
