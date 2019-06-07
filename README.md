@@ -36,6 +36,7 @@ $ serverless deploy --aws-profile myCustomProfile
 After run deploy command, you will see in the console the endpoints as shown bellow
 ```
 POST - https://8k3me6szzf.execute-api.us-east-1.amazonaws.com/dev/candidates
+  Body: {"fullname":"Ashley","email": "Ashley.frank123@gmil.com", "experience":10}
 GET - https://8k3me6szzf.execute-api.us-east-1.amazonaws.com/dev/candidates
 GET - https://8k3me6szzf.execute-api.us-east-1.amazonaws.com/dev/candidates/{id}
 DELETE - https://8k3me6szzf.execute-api.us-east-1.amazonaws.com/dev/candidates/{id}
